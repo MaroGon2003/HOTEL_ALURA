@@ -22,7 +22,7 @@ public class HuespedDAO {
 		try (con) {
 
 			final PreparedStatement statement = con.prepareStatement(
-					"INSERT INTO HUESPED(nombre, apellido, fechaNacimiento, nacionalidad, telefono, id_Reserva)" + " VALUES(?,?,?,?,?,?)",
+					"INSERT INTO huespedes(nombre, apellido, fecha_Nacimiento, nacionalidad, telefono, id_Reserva)" + " VALUES(?,?,?,?,?,?)",
 					Statement.RETURN_GENERATED_KEYS);
 
 			try (statement) {
@@ -39,7 +39,7 @@ public class HuespedDAO {
 
 		statement.setString(1, huesped.getNombre());
 		statement.setString(2, huesped.getApellido());
-		statement.setDate(3, huesped.getFechaNacimiento());
+		statement.setObject(3, huesped.getFechaNacimiento());
 		statement.setString(4, huesped.getNacionalidad());
 		statement.setString(5,huesped.getTelefono());  
 		statement.setInt(6, huesped.getIdReserva());
