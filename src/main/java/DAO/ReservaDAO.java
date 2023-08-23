@@ -9,8 +9,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JTextField;
-
 import factory.ConnectionFactory;
 import modelo.Reserva;
 

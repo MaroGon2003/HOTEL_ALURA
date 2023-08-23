@@ -5,7 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
+import factory.ConnectionFactory;
 import modelo.Huesped;
 
 
@@ -59,5 +63,41 @@ public class HuespedDAO {
 		}
 
 	}// fin ejecutar registro
+	
+	public List<Huesped> listar() {
+
+		List<Huesped> resultado = new ArrayList<>();
+
+		final Connection con = new ConnectionFactory().recuperarConexion();
+
+		try (con) {
+
+			final PreparedStatement statement = con
+					.prepareStatement("SELECT ID, NOMBRE, APELLIDO, FECHA_NACIMIENTO, NACIONALIDAD, TELEFONO, ID_RESERVA FROM huespedes");
+
+			try (statement) {
+
+				statement.execute();
+
+				ResultSet resultSet = statement.getResultSet();
+
+				while (resultSet.next()) {
+					
+					LocalDate fechaNacimiento = LocalDate.parse(resultSet.getString("FECHA_NACIMIENTO"));
+					
+					Huesped fila = new Huesped(resultSet.getInt("ID"),resultSet.getString("NOMBRE"),resultSet.getString("APELLIDO"),fechaNacimiento ,resultSet.getString("NACIONALIDAD"),
+							resultSet.getString("TELEFONO"), resultSet.getInt("ID_RESERVA"));
+
+					resultado.add(fila);
+				}
+
+				return resultado;
+
+			}
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}// fin listar
+
 
 }

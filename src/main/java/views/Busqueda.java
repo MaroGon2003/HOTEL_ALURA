@@ -7,6 +7,7 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import controller.HuespedController;
 import controller.ReservaController;
 
 import javax.swing.JTable;
@@ -44,6 +45,7 @@ public class Busqueda extends JFrame {
 	int xMouse, yMouse;
 	
 	private ReservaController reservaController;
+	private HuespedController huespedController;
 
 	/**
 	 * Launch the application.
@@ -67,6 +69,7 @@ public class Busqueda extends JFrame {
 	public Busqueda() {
 		
 		this.reservaController = new ReservaController();
+		this.huespedController = new HuespedController();
 		
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Busqueda.class.getResource("/imagenes/lupa2.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -114,7 +117,7 @@ public class Busqueda extends JFrame {
 		panel.addTab("Reservas", new ImageIcon(Busqueda.class.getResource("/imagenes/reservado.png")), scroll_table, null);
 		scroll_table.setVisible(true);
 		
-		cargarReservas();
+		cargarReservas(); //Cargar la tabla de reservas en el frame
 		
 		
 		tbHuespedes = new JTable();
@@ -131,6 +134,8 @@ public class Busqueda extends JFrame {
 		JScrollPane scroll_tableHuespedes = new JScrollPane(tbHuespedes);
 		panel.addTab("Huéspedes", new ImageIcon(Busqueda.class.getResource("/imagenes/pessoas.png")), scroll_tableHuespedes, null);
 		scroll_tableHuespedes.setVisible(true);
+		
+		cargarHuespedes(); //Cargar la tabla de huespedes en el frame
 		
 		JLabel lblNewLabel_2 = new JLabel("");
 		lblNewLabel_2.setIcon(new ImageIcon(Busqueda.class.getResource("/imagenes/Ha-100px.png")));
@@ -278,6 +283,14 @@ public class Busqueda extends JFrame {
 		var reservas = this.reservaController.listar();
 		
 		reservas.forEach(reserva -> modelo.addRow(new Object[] { reserva.getId(),reserva.getFechaEntrada(),reserva.getFechaSalida(),reserva.getValor(),reserva.getFormaPago()}));
+		
+	}
+	
+	private void cargarHuespedes() {
+		
+		var huespedes = this.huespedController.listar();
+		
+		huespedes.forEach(huesped -> modeloHuesped.addRow(new Object[] {huesped.getId(),huesped.getNombre(),huesped.getApellido(),huesped.getFechaNacimiento(),huesped.getNacionalidad(),huesped.getTelefono(),huesped.getIdReserva()}));
 		
 	}
 	
