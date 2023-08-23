@@ -1,5 +1,7 @@
 package controller;
 
+import java.util.List;
+
 import DAO.ReservaDAO;
 import factory.ConnectionFactory;
 import modelo.Reserva;
@@ -25,12 +27,6 @@ public class ReservaController {
 
 	}
 
-	public List<Producto> listar() {
-
-		return reservaDAO.listar();
-
-	}
-
 	public List<Producto> listar(Categoria categoria) {
 		return reservaDAO.listar(categoria.getId());
 	}
@@ -40,6 +36,12 @@ public class ReservaController {
 
 		reservaDAO.guardar(reserva);
 		
+	}
+	
+	public List<Reserva> listar() {
+
+		return reservaDAO.listar();
+
 	}
 
 }

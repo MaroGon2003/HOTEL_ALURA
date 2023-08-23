@@ -6,11 +6,15 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+
+import controller.ReservaController;
+
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.SystemColor;
 import javax.swing.JLabel;
 import java.awt.Font;
@@ -38,6 +42,8 @@ public class Busqueda extends JFrame {
 	private JLabel labelAtras;
 	private JLabel labelExit;
 	int xMouse, yMouse;
+	
+	private ReservaController reservaController;
 
 	/**
 	 * Launch the application.
@@ -59,6 +65,9 @@ public class Busqueda extends JFrame {
 	 * Create the frame.
 	 */
 	public Busqueda() {
+		
+		this.reservaController = new ReservaController();
+		
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Busqueda.class.getResource("/imagenes/lupa2.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 910, 571);
@@ -104,6 +113,8 @@ public class Busqueda extends JFrame {
 		JScrollPane scroll_table = new JScrollPane(tbReservas);
 		panel.addTab("Reservas", new ImageIcon(Busqueda.class.getResource("/imagenes/reservado.png")), scroll_table, null);
 		scroll_table.setVisible(true);
+		
+		cargarReservas();
 		
 		
 		tbHuespedes = new JTable();
@@ -260,6 +271,14 @@ public class Busqueda extends JFrame {
 		lblEliminar.setBounds(0, 0, 122, 35);
 		btnEliminar.add(lblEliminar);
 		setResizable(false);
+	}
+	
+	private void cargarReservas() {
+		
+		var reservas = this.reservaController.listar();
+		
+		reservas.forEach(reserva -> modelo.addRow(new Object[] { reserva.getId(),reserva.getFechaEntrada(),reserva.getFechaSalida(),reserva.getValor(),reserva.getFormaPago()}));
+		
 	}
 	
 //Código que permite mover la ventana por la pantalla según la posición de "x" y "y"

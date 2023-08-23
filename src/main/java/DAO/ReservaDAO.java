@@ -5,7 +5,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.swing.JTextField;
+
+import factory.ConnectionFactory;
 import modelo.Reserva;
 
 public class ReservaDAO {
@@ -57,5 +63,41 @@ public class ReservaDAO {
 		}
 
 	}// fin ejecutar registro
+	
+	public List<Reserva> listar() {
+
+		List<Reserva> resultado = new ArrayList<>();
+
+		final Connection con = new ConnectionFactory().recuperarConexion();
+
+		try (con) {
+
+			final PreparedStatement statement = con
+					.prepareStatement("SELECT ID, FECHA_ENTRADA, FECHA_SALIDA, VALOR, FORMA_DE_PAGO FROM reservas");
+
+			try (statement) {
+
+				statement.execute();
+
+				ResultSet resultSet = statement.getResultSet();
+
+				while (resultSet.next()) {
+					
+					LocalDate fechaEntrada = LocalDate.parse(resultSet.getString("FECHA_ENTRADA"));
+					LocalDate fechaSalida = LocalDate.parse(resultSet.getString("FECHA_SALIDA"));
+					
+					Reserva fila = new Reserva(resultSet.getInt("ID"),fechaEntrada ,fechaSalida,
+							resultSet.getString("VALOR"), resultSet.getString("FORMA_DE_PAGO"));
+
+					resultado.add(fila);
+				}
+
+				return resultado;
+
+			}
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}// fin listar
 
 }
