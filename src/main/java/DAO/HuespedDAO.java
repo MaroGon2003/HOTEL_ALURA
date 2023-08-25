@@ -98,6 +98,43 @@ public class HuespedDAO {
 			throw new RuntimeException(e);
 		}
 	}// fin listar
+	
+	public List<Huesped> buscarApellido(String apellido) {
+
+		List<Huesped> resultado = new ArrayList<>();
+
+		final Connection con = new ConnectionFactory().recuperarConexion();
+
+		try (con) {
+
+			final PreparedStatement statement = con
+					.prepareStatement("SELECT ID, NOMBRE, APELLIDO, FECHA_NACIMIENTO, NACIONALIDAD, TELEFONO, ID_RESERVA FROM huespedes WHERE APELLIDO = ?");
+
+			try (statement) {
+				
+				statement.setString(1, apellido);
+
+				statement.execute();
+
+				ResultSet resultSet = statement.getResultSet();
+
+				while (resultSet.next()) {
+					
+					LocalDate fechaNacimiento = LocalDate.parse(resultSet.getString("FECHA_NACIMIENTO"));
+					
+					Huesped fila = new Huesped(resultSet.getInt("ID"),resultSet.getString("NOMBRE"),resultSet.getString("APELLIDO"),fechaNacimiento ,resultSet.getString("NACIONALIDAD"),
+							resultSet.getString("TELEFONO"), resultSet.getInt("ID_RESERVA"));
+
+					resultado.add(fila);
+				}
+
+				return resultado;
+
+			}
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}// fin buscar por apellido
 
 
 }

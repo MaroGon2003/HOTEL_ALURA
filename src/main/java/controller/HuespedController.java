@@ -21,5 +21,9 @@ public class HuespedController {
 	public List<Huesped> listar(){
 		return huespedDAO.listar();
 	}
+	
+	public List<Huesped> buscarApellido(String apellido){
+		return huespedDAO.buscarApellido(apellido);
+	}
 
 }

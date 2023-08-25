@@ -15,34 +15,36 @@ public class ReservaController {
 	}
 
 	/*
-	public int modificar(String nombre, String descripcion, Integer id, Integer cantidad) {
+	 * public int modificar(String nombre, String descripcion, Integer id, Integer
+	 * cantidad) {
+	 * 
+	 * return reservaDAO.modificar(nombre, descripcion, id, cantidad);
+	 * 
+	 * }
+	 * 
+	 * public int eliminar(Integer id) {
+	 * 
+	 * return reservaDAO.eliminar(id);
+	 * 
+	 * }
+	 * 
+	 * 
+	 */
 
-		return reservaDAO.modificar(nombre, descripcion, id, cantidad);
-
-	}
-
-	public int eliminar(Integer id) {
-
-		return reservaDAO.eliminar(id);
-
-	}
-
-	public List<Producto> listar(Categoria categoria) {
-		return reservaDAO.listar(categoria.getId());
-	}
-	  */
-
-	public void guardar(Reserva reserva){
+	public void guardar(Reserva reserva) {
 
 		reservaDAO.guardar(reserva);
-		
+
 	}
-	
+
 	public List<Reserva> listar() {
 
 		return reservaDAO.listar();
 
 	}
 
-}
+	public List<Reserva> buscarId(String id) {
+		return reservaDAO.buscarId(id);
+	}
 
+}

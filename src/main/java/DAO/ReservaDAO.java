@@ -97,5 +97,43 @@ public class ReservaDAO {
 			throw new RuntimeException(e);
 		}
 	}// fin listar
+	
+	public List<Reserva> buscarId(String id) {
+
+		List<Reserva> resultado = new ArrayList<>();
+
+		final Connection con = new ConnectionFactory().recuperarConexion();
+
+		try (con) {
+
+			final PreparedStatement statement = con
+					.prepareStatement("SELECT ID, FECHA_ENTRADA, FECHA_SALIDA, VALOR, FORMA_DE_PAGO FROM reservas WHERE ID = ?");
+
+			try (statement) {
+				
+				statement.setString(1,id);
+
+				statement.execute();
+
+				ResultSet resultSet = statement.getResultSet();
+
+				while (resultSet.next()) {
+					
+					LocalDate fechaEntrada = LocalDate.parse(resultSet.getString("FECHA_ENTRADA"));
+					LocalDate fechaSalida = LocalDate.parse(resultSet.getString("FECHA_SALIDA"));
+					
+					Reserva fila = new Reserva(resultSet.getInt("ID"),fechaEntrada ,fechaSalida,
+							resultSet.getString("VALOR"), resultSet.getString("FORMA_DE_PAGO"));
+
+					resultado.add(fila);
+				}
+
+				return resultado;
+
+			}
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}// fin listar
 
 }

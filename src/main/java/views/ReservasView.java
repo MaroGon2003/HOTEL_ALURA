@@ -360,7 +360,7 @@ public class ReservasView extends JFrame {
 			}
 
 			valor = dias * noche;
-			txtValor.setText("$" + valor);
+			txtValor.setText("$ " + valor);
 			
 		}
 		
