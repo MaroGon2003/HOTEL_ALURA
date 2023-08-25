@@ -107,11 +107,12 @@ public class ReservaDAO {
 		try (con) {
 
 			final PreparedStatement statement = con
-					.prepareStatement("SELECT ID, FECHA_ENTRADA, FECHA_SALIDA, VALOR, FORMA_DE_PAGO FROM reservas WHERE ID = ?");
+					.prepareStatement("SELECT ID, FECHA_ENTRADA, FECHA_SALIDA, VALOR, FORMA_DE_PAGO FROM reservas WHERE ID = ? OR APELLIDO = ?");
 
 			try (statement) {
 				
 				statement.setString(1,id);
+				statement.setString(2, id);
 
 				statement.execute();
 

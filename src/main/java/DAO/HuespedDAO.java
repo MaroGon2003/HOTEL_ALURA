@@ -108,11 +108,12 @@ public class HuespedDAO {
 		try (con) {
 
 			final PreparedStatement statement = con
-					.prepareStatement("SELECT ID, NOMBRE, APELLIDO, FECHA_NACIMIENTO, NACIONALIDAD, TELEFONO, ID_RESERVA FROM huespedes WHERE APELLIDO = ?");
+					.prepareStatement("SELECT ID, NOMBRE, APELLIDO, FECHA_NACIMIENTO, NACIONALIDAD, TELEFONO, ID_RESERVA FROM huespedes WHERE APELLIDO = ? OR ID = ?");
 
 			try (statement) {
 				
 				statement.setString(1, apellido);
+				statement.setString(2, apellido);
 
 				statement.execute();
 
