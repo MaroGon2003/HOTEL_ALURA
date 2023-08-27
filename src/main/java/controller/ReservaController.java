@@ -1,5 +1,6 @@
 package controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import DAO.ReservaDAO;
@@ -15,12 +16,7 @@ public class ReservaController {
 	}
 
 	/*
-	 * public int modificar(String nombre, String descripcion, Integer id, Integer
-	 * cantidad) {
-	 * 
-	 * return reservaDAO.modificar(nombre, descripcion, id, cantidad);
-	 * 
-	 * }
+
 	 * 
 	 * public int eliminar(Integer id) {
 	 * 
@@ -32,19 +28,19 @@ public class ReservaController {
 	 */
 
 	public void guardar(Reserva reserva) {
-
 		reservaDAO.guardar(reserva);
-
 	}
 
 	public List<Reserva> listar() {
-
 		return reservaDAO.listar();
-
 	}
 
 	public List<Reserva> buscarId(String id) {
 		return reservaDAO.buscarId(id);
+	}
+	
+	public int modificar(String id, LocalDate fechaEntrada, LocalDate fechaSalida, String  valor, String formaPago) {
+		return reservaDAO.modificar(id, fechaEntrada, fechaSalida, valor, formaPago);
 	}
 
 }

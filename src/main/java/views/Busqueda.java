@@ -7,6 +7,8 @@ import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import com.mysql.cj.exceptions.DataConversionException;
+
 import controller.HuespedController;
 import controller.ReservaController;
 
@@ -18,9 +20,13 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.SystemColor;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.Font;
 import java.awt.event.ActionListener;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Optional;
 import java.awt.event.ActionEvent;
 import javax.swing.JTabbedPane;
 import java.awt.Toolkit;
@@ -30,6 +36,10 @@ import javax.swing.ListSelectionModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 @SuppressWarnings("serial")
 public class Busqueda extends JFrame {
@@ -46,6 +56,7 @@ public class Busqueda extends JFrame {
 
 	private ReservaController reservaController;
 	private HuespedController huespedController;
+	private ReservasView reserView;
 
 	/**
 	 * Launch the application.
@@ -70,6 +81,7 @@ public class Busqueda extends JFrame {
 
 		this.reservaController = new ReservaController();
 		this.huespedController = new HuespedController();
+		this.reserView = new ReservasView();
 
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Busqueda.class.getResource("/imagenes/lupa2.png")));
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -265,6 +277,23 @@ public class Busqueda extends JFrame {
 		lblBuscar.setFont(new Font("Roboto", Font.PLAIN, 18));
 
 		JPanel btnEditar = new JPanel();
+		btnEditar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+
+				int filaReserva = tbReservas.getSelectedRow();
+
+				if (filaReserva >= 0) {
+
+					modificarReserva();
+					limpiarTabla();
+					cargarReservas();
+					cargarHuespedes();
+				}
+
+			}
+		});
+
 		btnEditar.setLayout(null);
 		btnEditar.setBackground(new Color(12, 138, 199));
 		btnEditar.setBounds(635, 508, 122, 35);
@@ -330,6 +359,67 @@ public class Busqueda extends JFrame {
 				huesped.getApellido(), huesped.getFechaNacimiento(), huesped.getNacionalidad(), huesped.getTelefono(),
 				huesped.getIdReserva() }));
 
+	}
+
+	private void modificarReserva() {
+
+		Optional.ofNullable(modelo.getValueAt(tbReservas.getSelectedRow(), tbReservas.getSelectedColumn()))
+				.ifPresent(fila -> {
+
+					LocalDate fechaEntrada;
+					LocalDate fechaSalida;
+
+					try {
+
+						DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+						fechaEntrada = LocalDate.parse(modelo.getValueAt(tbReservas.getSelectedRow(), 1).toString(), dateFormat);
+						fechaSalida = LocalDate.parse(modelo.getValueAt(tbReservas.getSelectedRow(), 2).toString(), dateFormat);
+						
+					} catch (DateTimeException e) {
+						throw new RuntimeException(e);
+					}
+
+					this.reserView.limpiarValor();
+
+					String valor = calcularValorReserva(fechaEntrada, fechaSalida);
+
+					String formaPago = (String) modelo.getValueAt(tbReservas.getSelectedRow(), 4);
+
+					String id = (String) modelo.getValueAt(tbReservas.getSelectedRow(), 0).toString();
+
+					if (tbReservas.getSelectedColumn() == 0) {
+						JOptionPane.showMessageDialog(this, "No se puede editar el id");
+					} else {
+
+						var filasModificadas = this.reservaController.modificar(id, fechaEntrada, fechaSalida, valor,
+								formaPago);
+
+						JOptionPane.showMessageDialog(this,
+								String.format("%d item modificado con éxito!", filasModificadas));
+
+					}
+
+				});
+
+	}
+
+	private String calcularValorReserva(LocalDate fechaEntrada, LocalDate fechaSalida) {
+		if (fechaEntrada != null && fechaSalida != null) {
+
+			int dias = (int) ChronoUnit.DAYS.between(fechaEntrada, fechaSalida);
+			double noche = 80.000;
+			double valor;
+
+			valor = dias * noche;
+
+			return String.valueOf("$ " + valor);
+		} else {
+			return "";
+		}
+	}
+
+	private boolean tieneFilaElegida() {
+		return tbReservas.getSelectedRowCount() == 0 || tbReservas.getSelectedColumnCount() == 0;
 	}
 
 	private void limpiarTabla() {

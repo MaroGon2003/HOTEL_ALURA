@@ -134,6 +134,37 @@ public class ReservaDAO {
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
-	}// fin listar
+	}// fin buscar por id
+	
+	public int modificar(String id, LocalDate fechaEntrada, LocalDate fechaSalida, String  valor, String formaPago) {
+
+		try {
+
+			final PreparedStatement statement = con.prepareStatement(
+					"UPDATE RESERVAS SET FECHA_ENTRADA = ?, FECHA_SALIDA = ? , VALOR = ?, FORMA_DE_PAGO = ? WHERE ID = ?");
+
+			try (statement) {
+				
+				statement.setObject(1, java.sql.Date.valueOf(fechaEntrada));
+				statement.setObject(2, java.sql.Date.valueOf(fechaSalida));
+				statement.setString(3, valor);
+				statement.setString(4, formaPago);
+				statement.setString(5, id);
+
+				statement.execute();
+
+				int updateCount = statement.getUpdateCount();
+
+				return updateCount;
+
+			}
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+
+	}
+	
+	
 
 }
