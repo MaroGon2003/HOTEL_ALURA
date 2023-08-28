@@ -141,13 +141,14 @@ public class HuespedDAO {
 
 	public int modificar(String id, String nombre, String apellido, LocalDate fechaNacimiento, String nacionalidad,
 			String telefono, String idReserva) {
-		
+
 		try {
-			
-			final PreparedStatement statement = con.prepareStatement("UPDATE HUESPEDES SET NOMBRE = ?, APELLIDO = ?, FECHA_NACIMIENTO = ?, NACIONALIDAD = ?, TELEFONO = ?, ID_RESERVA = ? WHERE ID = ?");
-			
-			try(statement){
-				
+
+			final PreparedStatement statement = con.prepareStatement(
+					"UPDATE HUESPEDES SET NOMBRE = ?, APELLIDO = ?, FECHA_NACIMIENTO = ?, NACIONALIDAD = ?, TELEFONO = ?, ID_RESERVA = ? WHERE ID = ?");
+
+			try (statement) {
+
 				statement.setString(1, nombre);
 				statement.setString(2, apellido);
 				statement.setObject(3, java.sql.Date.valueOf(fechaNacimiento));
@@ -155,17 +156,40 @@ public class HuespedDAO {
 				statement.setString(5, telefono);
 				statement.setString(6, idReserva);
 				statement.setString(7, id);
-				
+
 				statement.execute();
-					
+
 				int updateCount = statement.getUpdateCount();
 
 				return updateCount;
-				
+
 			}
-			
+
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
+		}
+
+	}// fin modificar huesped
+
+	public int eliminar(String id) {
+
+		try {
+
+			final PreparedStatement statement = con.prepareStatement("DELETE FROM HUESPEDES WHERE ID = ?");
+
+			try (statement) {
+
+				statement.setString(1, id);
+				statement.execute();
+
+				int updateCount = statement.getUpdateCount();
+
+				return updateCount;
+
+			}
+
+		} catch (SQLException e) {
+			throw new RuntimeException();
 		}
 
 	}

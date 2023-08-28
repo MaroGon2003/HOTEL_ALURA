@@ -163,8 +163,29 @@ public class ReservaDAO {
 			throw new RuntimeException(e);
 		}
 
+	} // fin modificar reserva
+	
+	public int eliminar(String id) {
+		
+		try {
+			
+			final PreparedStatement statement = con.prepareStatement("DELETE FROM RESERVAS WHERE ID = ?");
+			
+			try(statement){
+				
+				statement.setString(1, id);
+				statement.execute();
+				
+				int updateCount = statement.getUpdateCount();
+
+				return updateCount;
+				
+			}
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		
 	}
-	
-	
 
 }

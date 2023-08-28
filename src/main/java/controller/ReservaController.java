@@ -15,18 +15,6 @@ public class ReservaController {
 		this.reservaDAO = new ReservaDAO(new ConnectionFactory().recuperarConexion());
 	}
 
-	/*
-
-	 * 
-	 * public int eliminar(Integer id) {
-	 * 
-	 * return reservaDAO.eliminar(id);
-	 * 
-	 * }
-	 * 
-	 * 
-	 */
-
 	public void guardar(Reserva reserva) {
 		reservaDAO.guardar(reserva);
 	}
@@ -41,6 +29,10 @@ public class ReservaController {
 	
 	public int modificar(String id, LocalDate fechaEntrada, LocalDate fechaSalida, String  valor, String formaPago) {
 		return reservaDAO.modificar(id, fechaEntrada, fechaSalida, valor, formaPago);
+	}
+	
+	public int eliminar(String id) {
+		return reservaDAO.eliminar(id);
 	}
 
 }

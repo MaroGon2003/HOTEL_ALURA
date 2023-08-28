@@ -316,6 +316,29 @@ public class Busqueda extends JFrame {
 		btnEditar.add(lblEditar);
 
 		JPanel btnEliminar = new JPanel();
+		btnEliminar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+
+				int filaReserva = tbReservas.getSelectedRow();
+				int filaHuesped = tbHuespedes.getSelectedRow();
+				int resp;
+
+				if (filaReserva >= 0 || filaHuesped >= 0) {
+					
+					resp = JOptionPane.showConfirmDialog(null, "Esta seguro de liminar este registro y su referente?");
+					
+					if(resp == JOptionPane.YES_OPTION) {
+						eliminarRegistros();
+						limpiarTabla();
+						cargarReservas();
+						cargarHuespedes();
+					}
+
+				}
+
+			}
+		});
 		btnEliminar.setLayout(null);
 		btnEliminar.setBackground(new Color(12, 138, 199));
 		btnEliminar.setBounds(767, 508, 122, 35);
@@ -330,6 +353,9 @@ public class Busqueda extends JFrame {
 		btnEliminar.add(lblEliminar);
 		setResizable(false);
 	}
+	
+	
+	//Reserva CRUD ------------------------------------------------------------------------------------------------------------
 
 	private void cargarReservas() {
 
@@ -339,17 +365,7 @@ public class Busqueda extends JFrame {
 				reserva.getFechaSalida(), reserva.getValor(), reserva.getFormaPago() }));
 
 	}
-
-	private void cargarHuespedes() {
-
-		var huespedes = this.huespedController.listar();
-
-		huespedes.forEach(huesped -> modeloHuesped.addRow(new Object[] { huesped.getId(), huesped.getNombre(),
-				huesped.getApellido(), huesped.getFechaNacimiento(), huesped.getNacionalidad(), huesped.getTelefono(),
-				huesped.getIdReserva() }));
-
-	}
-
+	
 	private void buscarReservaId(String id) {
 
 		var reservasId = this.reservaController.buscarId(id);
@@ -357,18 +373,8 @@ public class Busqueda extends JFrame {
 		reservasId.forEach(reserva -> modelo.addRow(new Object[] { reserva.getId(), reserva.getFechaEntrada(),
 				reserva.getFechaSalida(), reserva.getValor(), reserva.getFormaPago() }));
 
-	}
-
-	private void buscarHuespedApellido(String apellido) {
-
-		var huespedesApellido = this.huespedController.buscarApellido(apellido);
-
-		huespedesApellido.forEach(huesped -> modeloHuesped.addRow(new Object[] { huesped.getId(), huesped.getNombre(),
-				huesped.getApellido(), huesped.getFechaNacimiento(), huesped.getNacionalidad(), huesped.getTelefono(),
-				huesped.getIdReserva() }));
-
-	}
-
+	}//fin buscar reserva por id
+	
 	private void modificarReserva() {
 
 		Optional.ofNullable(modelo.getValueAt(tbReservas.getSelectedRow(), tbReservas.getSelectedColumn()))
@@ -411,6 +417,45 @@ public class Busqueda extends JFrame {
 
 	}//fin modificar reserva
 	
+	private String calcularValorReserva(LocalDate fechaEntrada, LocalDate fechaSalida) {
+		if (fechaEntrada != null && fechaSalida != null) {
+
+			int dias = (int) ChronoUnit.DAYS.between(fechaEntrada, fechaSalida);
+			double noche = 80.000;
+			double valor;
+
+			valor = dias * noche;
+
+			return String.valueOf("$ " + valor);
+		} else {
+			return "";
+		}
+	}
+	
+	
+	//Huesped CRUD --------------------------------------------------------------------------------------------------------------------
+
+	private void cargarHuespedes() {
+
+		var huespedes = this.huespedController.listar();
+
+		huespedes.forEach(huesped -> modeloHuesped.addRow(new Object[] { huesped.getId(), huesped.getNombre(),
+				huesped.getApellido(), huesped.getFechaNacimiento(), huesped.getNacionalidad(), huesped.getTelefono(),
+				huesped.getIdReserva() }));
+
+	}
+
+	
+	private void buscarHuespedApellido(String apellido) {
+
+		var huespedesApellido = this.huespedController.buscarApellido(apellido);
+
+		huespedesApellido.forEach(huesped -> modeloHuesped.addRow(new Object[] { huesped.getId(), huesped.getNombre(),
+				huesped.getApellido(), huesped.getFechaNacimiento(), huesped.getNacionalidad(), huesped.getTelefono(),
+				huesped.getIdReserva() }));
+
+	}
+
 	private void modificarHuesped() {
 		
 		Optional.ofNullable(modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), tbHuespedes.getSelectedColumn()))
@@ -453,21 +498,27 @@ public class Busqueda extends JFrame {
 		},null);
 
 		
-	}
-
-	private String calcularValorReserva(LocalDate fechaEntrada, LocalDate fechaSalida) {
-		if (fechaEntrada != null && fechaSalida != null) {
-
-			int dias = (int) ChronoUnit.DAYS.between(fechaEntrada, fechaSalida);
-			double noche = 80.000;
-			double valor;
-
-			valor = dias * noche;
-
-			return String.valueOf("$ " + valor);
+	} // fin modificar Huesped
+	
+	
+	private void eliminarRegistros() {
+		
+		int filaHuesped = tbHuespedes.getSelectedRow();
+		String id;
+		
+		if (filaHuesped >= 0) {
+			id = (String) modelo.getValueAt(tbHuespedes.getSelectedRow(), 0).toString();
 		} else {
-			return "";
+			id = (String) modelo.getValueAt(tbReservas.getSelectedRow(), 0).toString();
 		}
+		
+		var filasEliminadas = this.huespedController.eliminar(id);
+		filasEliminadas += this.reservaController.eliminar(id);
+		
+		JOptionPane.showMessageDialog(this,
+				String.format("%d registros eliminados con éxito!", filasEliminadas));
+
+		
 	}
 
 	private void limpiarTabla() {
