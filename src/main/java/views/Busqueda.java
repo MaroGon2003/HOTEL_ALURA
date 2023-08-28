@@ -282,6 +282,7 @@ public class Busqueda extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 
 				int filaReserva = tbReservas.getSelectedRow();
+				int filaHuesped = tbHuespedes.getSelectedRow();
 
 				if (filaReserva >= 0) {
 
@@ -289,6 +290,13 @@ public class Busqueda extends JFrame {
 					limpiarTabla();
 					cargarReservas();
 					cargarHuespedes();
+				}else if(filaHuesped >= 0) {
+					
+					modificarHuesped();
+					limpiarTabla();
+					cargarReservas();
+					cargarHuespedes();
+					
 				}
 
 			}
@@ -401,6 +409,50 @@ public class Busqueda extends JFrame {
 
 				});
 
+	}//fin modificar reserva
+	
+	private void modificarHuesped() {
+		
+		Optional.ofNullable(modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), tbHuespedes.getSelectedColumn()))
+		.ifPresentOrElse(filaHuesped -> {
+
+			LocalDate fechaNacimiento;
+
+			try {
+
+				DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+				fechaNacimiento = LocalDate.parse(modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 3).toString(), dateFormat);
+				
+			} catch (DateTimeException e) {
+				throw new RuntimeException(e);
+			}
+
+			String nombre = (String) modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 1);
+			
+			String apellido = (String) modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 2);
+			
+			String nacionalidad = (String) modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 4);
+			
+			String telefono = (String) modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 5);
+
+			String idReserva = (String) modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 6).toString();
+
+			String id = (String) modeloHuesped.getValueAt(tbHuespedes.getSelectedRow(), 0).toString();
+
+			if (tbHuespedes.getSelectedColumn() == 0 || tbHuespedes.getSelectedColumn() == 6) {
+				JOptionPane.showMessageDialog(this, "No se puede editar ningun id");
+			} else {
+
+				var filasModificadas = this.huespedController.modificar(id, nombre, apellido, fechaNacimiento, nacionalidad, telefono, idReserva);
+
+				JOptionPane.showMessageDialog(this,
+						String.format("%d item modificado con éxito!", filasModificadas));
+
+			}
+
+		},null);
+
+		
 	}
 
 	private String calcularValorReserva(LocalDate fechaEntrada, LocalDate fechaSalida) {
@@ -416,10 +468,6 @@ public class Busqueda extends JFrame {
 		} else {
 			return "";
 		}
-	}
-
-	private boolean tieneFilaElegida() {
-		return tbReservas.getSelectedRowCount() == 0 || tbReservas.getSelectedColumnCount() == 0;
 	}
 
 	private void limpiarTabla() {

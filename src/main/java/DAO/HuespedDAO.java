@@ -12,9 +12,8 @@ import java.util.List;
 import factory.ConnectionFactory;
 import modelo.Huesped;
 
-
 public class HuespedDAO {
-	
+
 	final private Connection con;
 
 	public HuespedDAO(Connection con) {
@@ -26,7 +25,8 @@ public class HuespedDAO {
 		try (con) {
 
 			final PreparedStatement statement = con.prepareStatement(
-					"INSERT INTO huespedes(nombre, apellido, fecha_Nacimiento, nacionalidad, telefono, id_Reserva)" + " VALUES(?,?,?,?,?,?)",
+					"INSERT INTO huespedes(nombre, apellido, fecha_Nacimiento, nacionalidad, telefono, id_Reserva)"
+							+ " VALUES(?,?,?,?,?,?)",
 					Statement.RETURN_GENERATED_KEYS);
 
 			try (statement) {
@@ -38,14 +38,14 @@ public class HuespedDAO {
 			throw new RuntimeException(e);
 		}
 	}// fin guardado
-	
+
 	private void ejecutandoRegistro(Huesped huesped, PreparedStatement statement) throws SQLException {
 
 		statement.setString(1, huesped.getNombre());
 		statement.setString(2, huesped.getApellido());
 		statement.setObject(3, huesped.getFechaNacimiento());
 		statement.setString(4, huesped.getNacionalidad());
-		statement.setString(5,huesped.getTelefono());  
+		statement.setString(5, huesped.getTelefono());
 		statement.setInt(6, huesped.getIdReserva());
 		statement.execute();
 
@@ -63,7 +63,7 @@ public class HuespedDAO {
 		}
 
 	}// fin ejecutar registro
-	
+
 	public List<Huesped> listar() {
 
 		List<Huesped> resultado = new ArrayList<>();
@@ -72,8 +72,8 @@ public class HuespedDAO {
 
 		try (con) {
 
-			final PreparedStatement statement = con
-					.prepareStatement("SELECT ID, NOMBRE, APELLIDO, FECHA_NACIMIENTO, NACIONALIDAD, TELEFONO, ID_RESERVA FROM huespedes");
+			final PreparedStatement statement = con.prepareStatement(
+					"SELECT ID, NOMBRE, APELLIDO, FECHA_NACIMIENTO, NACIONALIDAD, TELEFONO, ID_RESERVA FROM huespedes");
 
 			try (statement) {
 
@@ -82,10 +82,11 @@ public class HuespedDAO {
 				ResultSet resultSet = statement.getResultSet();
 
 				while (resultSet.next()) {
-					
+
 					LocalDate fechaNacimiento = LocalDate.parse(resultSet.getString("FECHA_NACIMIENTO"));
-					
-					Huesped fila = new Huesped(resultSet.getInt("ID"),resultSet.getString("NOMBRE"),resultSet.getString("APELLIDO"),fechaNacimiento ,resultSet.getString("NACIONALIDAD"),
+
+					Huesped fila = new Huesped(resultSet.getInt("ID"), resultSet.getString("NOMBRE"),
+							resultSet.getString("APELLIDO"), fechaNacimiento, resultSet.getString("NACIONALIDAD"),
 							resultSet.getString("TELEFONO"), resultSet.getInt("ID_RESERVA"));
 
 					resultado.add(fila);
@@ -98,7 +99,7 @@ public class HuespedDAO {
 			throw new RuntimeException(e);
 		}
 	}// fin listar
-	
+
 	public List<Huesped> buscarApellido(String apellido) {
 
 		List<Huesped> resultado = new ArrayList<>();
@@ -107,11 +108,11 @@ public class HuespedDAO {
 
 		try (con) {
 
-			final PreparedStatement statement = con
-					.prepareStatement("SELECT ID, NOMBRE, APELLIDO, FECHA_NACIMIENTO, NACIONALIDAD, TELEFONO, ID_RESERVA FROM huespedes WHERE APELLIDO = ? OR ID = ?");
+			final PreparedStatement statement = con.prepareStatement(
+					"SELECT ID, NOMBRE, APELLIDO, FECHA_NACIMIENTO, NACIONALIDAD, TELEFONO, ID_RESERVA FROM huespedes WHERE APELLIDO = ? OR ID = ?");
 
 			try (statement) {
-				
+
 				statement.setString(1, apellido);
 				statement.setString(2, apellido);
 
@@ -120,10 +121,11 @@ public class HuespedDAO {
 				ResultSet resultSet = statement.getResultSet();
 
 				while (resultSet.next()) {
-					
+
 					LocalDate fechaNacimiento = LocalDate.parse(resultSet.getString("FECHA_NACIMIENTO"));
-					
-					Huesped fila = new Huesped(resultSet.getInt("ID"),resultSet.getString("NOMBRE"),resultSet.getString("APELLIDO"),fechaNacimiento ,resultSet.getString("NACIONALIDAD"),
+
+					Huesped fila = new Huesped(resultSet.getInt("ID"), resultSet.getString("NOMBRE"),
+							resultSet.getString("APELLIDO"), fechaNacimiento, resultSet.getString("NACIONALIDAD"),
 							resultSet.getString("TELEFONO"), resultSet.getInt("ID_RESERVA"));
 
 					resultado.add(fila);
@@ -137,5 +139,35 @@ public class HuespedDAO {
 		}
 	}// fin buscar por apellido
 
+	public int modificar(String id, String nombre, String apellido, LocalDate fechaNacimiento, String nacionalidad,
+			String telefono, String idReserva) {
+		
+		try {
+			
+			final PreparedStatement statement = con.prepareStatement("UPDATE HUESPEDES SET NOMBRE = ?, APELLIDO = ?, FECHA_NACIMIENTO = ?, NACIONALIDAD = ?, TELEFONO = ?, ID_RESERVA = ? WHERE ID = ?");
+			
+			try(statement){
+				
+				statement.setString(1, nombre);
+				statement.setString(2, apellido);
+				statement.setObject(3, java.sql.Date.valueOf(fechaNacimiento));
+				statement.setString(4, nacionalidad);
+				statement.setString(5, telefono);
+				statement.setString(6, idReserva);
+				statement.setString(7, id);
+				
+				statement.execute();
+					
+				int updateCount = statement.getUpdateCount();
+
+				return updateCount;
+				
+			}
+			
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+
+	}
 
 }

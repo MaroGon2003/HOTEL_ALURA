@@ -1,5 +1,6 @@
 package controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import DAO.HuespedDAO;
@@ -24,6 +25,11 @@ public class HuespedController {
 	
 	public List<Huesped> buscarApellido(String apellido){
 		return huespedDAO.buscarApellido(apellido);
+	}
+	
+	public int modificar(String id, String nombre, String apellido, LocalDate fechaNacimiento, String nacionalidad,
+			String telefono, String idReserva) {
+		return huespedDAO.modificar(id, nombre, apellido, fechaNacimiento, nacionalidad, telefono, idReserva);
 	}
 
 }
