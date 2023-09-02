@@ -19,6 +19,7 @@
 #### REGISTRO DE NUEVA RESERVA
 ![Screenshot from 2023-04-27 18-00-05](https://user-images.githubusercontent.com/28877424/235014024-25804d78-f0d9-431d-8587-df7a7e560ebd.png)
 #### REGISTRO DE HUESPED
-![Screenshot from 2023-04-27 18-00-40](https://user-images.githubusercontent.com/28877424/235014116-54fd96f0-5205-4ff5-91f1-deb8e0511adb.png)
+![Captura de pantalla 2023-09-02 110415](https://github.com/MaroGon2003/HOTEL_ALURA/assets/134355278/465dadd4-9e95-467e-9b34-2f9f590a3fd8)
 #### SECCIÓN DE BÚSQUEDA
-![Screenshot from 2023-04-27 18-01-22](https://user-images.githubusercontent.com/28877424/235014134-d418d4fc-1b97-450f-8408-b13f01ecb96a.png)
+![Captura de pantalla 2023-09-02 110605](https://github.com/MaroGon2003/HOTEL_ALURA/assets/134355278/7d5883f7-0c1c-46f4-90a3-dcd28ea1ac0e)
+
